@@ -11,12 +11,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
+
       - name: Install Dependencies
-        run: python -m pip install --upgrade pip && pip install -r mlops/requirements.txt
+        run: python -m pip install --upgrade pip && pip install -r MLOps/mlops/requirements.txt
+
       - name: Upload Dataset to Hugging Face Hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: python mlops/model_building/data_register.py
+        run: python MLOps/mlops/model_building/data_register.py
 
   data-prep:
     needs: register-dataset
@@ -26,12 +28,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
+
       - name: Install Dependencies
-        run: python -m pip install --upgrade pip && pip install -r mlops/requirements.txt
+        run: python -m pip install --upgrade pip && pip install -r MLOps/mlops/requirements.txt
+
       - name: Run Data Preparation
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: python mlops/model_building/prep.py
+        run: python MLOps/mlops/model_building/prep.py
 
   model-training:
     needs: data-prep
@@ -41,12 +45,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
+
       - name: Install Dependencies
-        run: python -m pip install --upgrade pip && pip install -r mlops/requirements.txt
+        run: python -m pip install --upgrade pip && pip install -r MLOps/mlops/requirements.txt
+
       - name: Model Building
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: python mlops/model_building/train.py
+        run: python MLOps/mlops/model_building/train.py
 
   deploy-hosting:
     needs: [model-training, data-prep, register-dataset]
@@ -56,9 +62,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
+
       - name: Install Dependencies
-        run: python -m pip install --upgrade pip && pip install -r mlops/requirements.txt
+        run: python -m pip install --upgrade pip && pip install -r MLOps/mlops/requirements.txt
+
       - name: Push files to Frontend Hugging Face Space
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: python mlops/hosting/hosting.py
+        run: python MLOps/mlops/hosting/hosting.py
